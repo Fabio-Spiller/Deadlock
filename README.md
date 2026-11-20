@@ -229,19 +229,25 @@ programa principal:
 Valor esperado em todas as execuções: 1.600.000
 
 Sem semáforo:
+```
 esperado = 1600000 obtido = 1218970 tempo = 0.38 segundos
+```
 
 Com semáforo:
+```
 esperado = 1600000 obtido = 1600000 tempo = 2.75 segundos
+```
 
 ### Por que a versão sem semáforo perde incrementos
 
 Porque precisa ler, somar o valor e depois escrever o novo valor, e no meio do caminho os processos podem se atropelar, por exemplo: 
 
+```
 Thread 1 lê o contador: 100
 Thread 2 lê o contador: 100
 Thread 2 grava 101
 Thread 1 grava 101
+```
 
 Um dos incrementos se perdeu. Isso acontece muitas vezes durante a execução, por isso o resultado final fica abaixo de 1.600.000.
 
@@ -286,6 +292,7 @@ Depois de 3 segundos o programa mostra quais threads ainda estão vivas. As duas
 
 ### Prova do travamento
 
+```
 T1 esperando LOCK_A
 T1 pegou LOCK_A
 T2 esperando LOCK_B
@@ -296,6 +303,7 @@ depois de 3 seg, ainda vivas:
  - MainThread
  - T1
  - T2
+```
 
 ### A correção (deadlock/deadcorrigido.py)
 
@@ -316,6 +324,7 @@ A condição de Coffman quebrada aqui também é a espera circular. Como todo mu
 
 ### Saída da versão corrigida
 
+```
 T1 esperando LOCK_A
 T1 pegou LOCK_A
 T2 esperando LOCK_A
@@ -328,6 +337,7 @@ T2 pegou LOCK_B
 T2 concluiu
 3 seg, ta vivo ainda:
  - MainThread
+```
 
 ### Outras formas de lidar com deadlock
 
@@ -335,6 +345,8 @@ Existem quatro jeitos clássicos de lidar com deadlock:
 
 - Ignorar: assumir que é raro e tentar resetar o processo
 - Detectar e recuperar: deixar acontecer e ver quem trava quem e parar um dos processos
+- Prevenir: quebrar uma das condições de Coffman antes de acontecer, que foi o que eu fiz colocando uma ordem fixa pros locks
+- Evitar: antes de entregar um recurso, ver se isso pode travar alguém e só entregar se for seguro, tipo o algoritmo do Banqueiro
 
 
 ## Conclusão
